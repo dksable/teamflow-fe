@@ -28,6 +28,7 @@ const emptyForm: EmployeeCreate = {
   last_name: "",
   email: "",
   date_of_birth: "",
+  designation: "",
   role: "view",
 };
 
@@ -120,6 +121,7 @@ function employeeToForm(employee: Employee): EmployeeCreate {
     last_name: employee.last_name,
     email: employee.email,
     date_of_birth: employee.date_of_birth,
+    designation: employee.designation,
     role: employee.role,
   };
 }

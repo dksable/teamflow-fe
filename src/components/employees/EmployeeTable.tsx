@@ -44,7 +44,7 @@ export function EmployeeTable({
 
   return (
     <div className="mt-6 overflow-x-auto rounded-md border bg-card">
-      <table className="min-w-[980px] w-full border-collapse text-left text-sm">
+      <table className="min-w-[1080px] w-full border-collapse text-left text-sm">
         <thead className="border-b bg-muted text-muted-foreground">
           <tr>
             <th className="px-4 py-3 font-medium">Employee ID</th>
@@ -52,6 +52,7 @@ export function EmployeeTable({
             <th className="px-4 py-3 font-medium">Last Name</th>
             <th className="px-4 py-3 font-medium">Email ID</th>
             <th className="px-4 py-3 font-medium">Date of Birth</th>
+            <th className="px-4 py-3 font-medium">Designation</th>
             <th className="px-4 py-3 font-medium">Role</th>
             <th className="px-4 py-3 font-medium">Account Status</th>
             {canManage ? (
@@ -67,6 +68,7 @@ export function EmployeeTable({
               <td className="px-4 py-3">{employee.last_name}</td>
               <td className="px-4 py-3">{employee.email}</td>
               <td className="px-4 py-3">{formatDate(employee.date_of_birth)}</td>
+              <td className="px-4 py-3">{employee.designation}</td>
               <td className="px-4 py-3">
                 <span className="inline-flex rounded-md border px-2 py-1 text-xs font-medium">
                   {formatRole(employee.role)}

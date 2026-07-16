@@ -5,6 +5,28 @@ import { Button } from "../ui/button";
 
 export type EmployeeFormErrors = Partial<Record<keyof EmployeeCreate, string>>;
 
+const designationOptions = [
+  "Software Engineer",
+  "Senior Software Engineer",
+  "Lead Software Engineer",
+  "Engineering Manager",
+  "QA Engineer",
+  "Senior QA Engineer",
+  "QA Lead",
+  "UI/UX Designer",
+  "Product Manager",
+  "Project Manager",
+  "HR Executive",
+  "HR Manager",
+  "Business Analyst",
+  "DevOps Engineer",
+  "Technical Architect",
+  "Team Lead",
+  "Intern",
+  "Other",
+];
+const otherDesignationValue = "__other_designation__";
+
 type EmployeeFormProps = {
   values: EmployeeCreate;
   errors: EmployeeFormErrors;
@@ -24,6 +46,12 @@ export function EmployeeForm({
   onChange,
   onSubmit,
 }: EmployeeFormProps) {
+  const isCustomDesignation =
+    Boolean(values.designation) &&
+    values.designation !== otherDesignationValue &&
+    !designationOptions.includes(values.designation);
+  const selectedDesignation = isCustomDesignation || values.designation === otherDesignationValue ? "Other" : values.designation;
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     onSubmit();
@@ -62,6 +90,42 @@ export function EmployeeForm({
         type="email"
         value={values.email}
       />
+      <FormField
+        error={errors.date_of_birth}
+        id="date_of_birth"
+        label="Date of Birth"
+        onChange={(value) => onChange("date_of_birth", value)}
+        type="date"
+        value={values.date_of_birth}
+      />
+      <label className="block text-sm font-medium" htmlFor="designation">
+        Designation
+        <select
+          aria-invalid={Boolean(errors.designation)}
+          className="mt-2 h-10 w-full rounded-md border bg-background px-3"
+          id="designation"
+          onChange={(event) => onChange("designation", event.target.value === "Other" ? otherDesignationValue : event.target.value)}
+          value={selectedDesignation}
+        >
+          <option value="">Select designation</option>
+          {designationOptions.map((option) => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </select>
+        {selectedDesignation === "Other" ? (
+          <input
+            aria-invalid={Boolean(errors.designation)}
+            className="mt-2 h-10 w-full rounded-md border bg-background px-3"
+            onChange={(event) => onChange("designation", event.target.value)}
+            placeholder="Custom Designation"
+            type="text"
+            value={isCustomDesignation ? values.designation : ""}
+          />
+        ) : null}
+        {errors.designation ? (
+          <p className="mt-1 text-sm text-red-600">{errors.designation}</p>
+        ) : null}
+      </label>
       <label className="block text-sm font-medium" htmlFor="role">
         Role
         <select
@@ -78,14 +142,6 @@ export function EmployeeForm({
           <p className="mt-1 text-sm text-red-600">{errors.role}</p>
         ) : null}
       </label>
-      <FormField
-        error={errors.date_of_birth}
-        id="date_of_birth"
-        label="Date of Birth"
-        onChange={(value) => onChange("date_of_birth", value)}
-        type="date"
-        value={values.date_of_birth}
-      />
       <div className="flex justify-end gap-3 pt-2">
         <Button
           disabled={isSubmitting}
@@ -148,6 +204,7 @@ export function normalizeEmployeeForm(values: EmployeeCreate): EmployeeCreate {
     last_name: values.last_name.trim(),
     email: values.email.trim().toLowerCase(),
     date_of_birth: values.date_of_birth,
+    designation: values.designation === otherDesignationValue ? "" : values.designation.trim(),
     role: values.role,
   };
 }
@@ -178,6 +235,10 @@ export function validateEmployeeForm(values: EmployeeCreate) {
     nextErrors.date_of_birth = "Date of birth is required";
   } else if (new Date(normalized.date_of_birth) > new Date()) {
     nextErrors.date_of_birth = "Date of birth cannot be in the future";
+  }
+
+  if (!normalized.designation) {
+    nextErrors.designation = "Designation is required.";
   }
 
   if (!["admin", "view"].includes(normalized.role)) {

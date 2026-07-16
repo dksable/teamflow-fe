@@ -5,6 +5,7 @@ export type Employee = {
   last_name: string;
   email: string;
   date_of_birth: string;
+  designation: string;
   role: "admin" | "view";
   account_status: "invited" | "active" | "disabled";
   created_at: string;
@@ -17,6 +18,7 @@ export type EmployeeCreate = {
   last_name: string;
   email: string;
   date_of_birth: string;
+  designation: string;
   role: "admin" | "view";
 };
 
